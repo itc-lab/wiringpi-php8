@@ -1,0 +1,7 @@
+ARG_ENABLE('wiringpi', 'wiringpi support', 'no');
+
+if (PHP_WIRINGPI != 'no') {
+	AC_DEFINE('HAVE_WIRINGPI', 1, 'wiringpi support enabled');
+
+	EXTENSION('wiringpi', 'wiringpi.c', null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+}
