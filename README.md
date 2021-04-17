@@ -5,7 +5,7 @@ php8 WiringPi extension
 Building
 ========
 ```
-install php8.0-dev
+apt-get install php8.0-dev
 phpize
 ./configure
 make
