@@ -2,6 +2,12 @@ WiringPi-php8
 ========
 php8 WiringPi extension
 
+Update WiringPi
+========
+cd /tmp
+wget https://project-downloads.drogon.net/wiringpi-latest.deb
+dpkg -i wiringpi-latest.deb
+
 Building
 ========
 ```
