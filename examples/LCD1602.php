@@ -43,6 +43,10 @@
 		protected $rowOff = array( 0x00, 0x40, 0x14, 0x54 );
 		protected $lcdControl = 0;
 
+		function __construct(  $rows, $cols, $bits ) {
+			$this->lcd( $rows, $cols, $bits );
+		}
+
 		function lcd( $rows, $cols, $bits ) {
 			$this->rows = $rows;
 			$this->cols = $cols;
