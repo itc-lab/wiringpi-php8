@@ -52,5 +52,15 @@ ZEND_TSRMLS_CACHE_EXTERN()
 #include <scrollPhat.h>
 ****/
 
+#if PHP_VERSION_ID < 80000
+#define	IS_MIXED	IS_OBJECT
+#undef	ZEND_ARG_OBJ_INFO
+#define	ZEND_ARG_OBJ_INFO(p1, p2, p3, p4)
+#undef	ZEND_ARG_TYPE_INFO
+#define	ZEND_ARG_TYPE_INFO(p1, p2, p3, p4)
+#define	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(p1, p2, p3, p4, p5)
+#define	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(p1,p2,p3,p4,p5)	ZEND_ARG_INFO(p1, p2)
+#endif
+
 #endif	/* PHP_WIRINGPI_H */
 

@@ -8,6 +8,10 @@
 #include "ext/standard/info.h"
 #include "php_wiringpi.h"
 #include "wiringpi_arginfo.h"
+#include <sys/ioctl.h>
+#include <asm/ioctl.h>
+#include <linux/i2c.h>
+#include <linux/i2c-dev.h>
 
 /* For compatibility with older PHP versions */
 #ifndef ZEND_PARSE_PARAMETERS_NONE
@@ -78,8 +82,9 @@ static const struct {
 	NAMEandVALUE( PI_MODEL_3BP ),
 	NAMEandVALUE( PI_MODEL_3AP ),
 	NAMEandVALUE( PI_MODEL_CM3P ),
+#if defined( PI_MODEL_4B )
 	NAMEandVALUE( PI_MODEL_4B ),
-
+#endif
 	NAMEandVALUE( PI_VERSION_1 ),
 	NAMEandVALUE( PI_VERSION_1_1 ),
 	NAMEandVALUE( PI_VERSION_1_2 ),
@@ -699,6 +704,71 @@ PHP_METHOD( WiringPi, wiringPiI2CSetup ) {
 		Z_PARAM_LONG( devId )
 	ZEND_PARSE_PARAMETERS_END();
 	RETURN_LONG( wiringPiI2CSetup( devId ) );
+}
+
+
+PHP_METHOD( WiringPi, I2CReadBlock ) {
+	zend_long fd, reg, length;
+	struct i2c_smbus_ioctl_data args ;
+	union i2c_smbus_data data ;
+	zend_long rt;
+	int i;
+
+	ZEND_PARSE_PARAMETERS_START( 3, 3 )
+		Z_PARAM_LONG( fd )
+		Z_PARAM_LONG( reg )
+		Z_PARAM_LONG( length )
+	ZEND_PARSE_PARAMETERS_END();
+
+	data.block[0] = (__u8)length;
+	args.read_write	= I2C_SMBUS_READ;
+	args.command	= reg;
+	//args.size		= I2C_SMBUS_BLOCK_DATA;
+	args.size		= I2C_SMBUS_I2C_BLOCK_DATA;
+	args.data		= &data;
+	rt = ioctl( fd, I2C_SMBUS, &args );
+
+	array_init( return_value );
+	for ( i = 0; i < length; i ++ ) {
+		add_next_index_long( return_value, data.block[i + 1] );
+	}
+}
+
+PHP_METHOD( WiringPi, I2CWriteBlock ) {
+	zval *array;
+	Bucket *p;
+	zend_long fd, reg, length = 0;
+	struct i2c_smbus_ioctl_data args ;
+	union i2c_smbus_data data ;
+	zend_long rt;
+	int i;
+
+	ZEND_PARSE_PARAMETERS_START( 3, 4 )
+		Z_PARAM_LONG( fd )
+		Z_PARAM_LONG( reg )
+		Z_PARAM_ZVAL( array )
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG( length )
+	ZEND_PARSE_PARAMETERS_END();
+
+	if ( length > Z_ARRVAL_P( array )->nNumUsed ) {
+		length = Z_ARRVAL_P( array )->nNumUsed;
+	}
+	if ( length >= sizeof( data.block ) ) {
+		length = sizeof( data.block ) - 1;
+	}
+	data.block[0] = (__u8)length;
+	for ( i = 0; i < length; i ++ ) {
+		p = Z_ARRVAL_P( array )->arData + i;
+		data.block[i + 1] = Z_LVAL( p->val );
+	}
+	args.read_write	= I2C_SMBUS_WRITE;
+	args.command	= reg;
+	//args.size		= I2C_SMBUS_BLOCK_DATA;
+	args.size		= I2C_SMBUS_I2C_BLOCK_DATA;
+	args.data		= &data;
+	rt = ioctl( fd, I2C_SMBUS, &args );
+	RETURN_LONG( rt );
 }
 
 

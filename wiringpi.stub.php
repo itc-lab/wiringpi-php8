@@ -60,5 +60,7 @@ class WiringPi
 	public static function wiringPiI2CWriteReg16(long $fd, long $reg, long $data): long {}
 	public static function wiringPiI2CSetupInterface(long $device, long $devId): long {}
 	public static function wiringPiI2CSetup(long $device): long {}
+	public static function I2CReadBlock(long $fd, long $reg, long $length): mixed {}
+	public static function I2CWriteBlock(long $fd, long $reg, mixed $value, long $length=0): long {}
 	public static function getConstants(): mixed {}
 }

@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 022991f19215944b42ac149b0c8202161ccb2c63 */
+ * Stub hash: 1be3d4b6a695381c5f26461e74e98ef93d0c008b */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_wiringpi_test1, 0, 0, IS_VOID, 0)
 ZEND_END_ARG_INFO()
@@ -189,6 +189,19 @@ ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_WiringPi_wiringPiI2CSetup, 
 	ZEND_ARG_OBJ_INFO(0, device, long, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_WiringPi_I2CReadBlock, 0, 3, IS_MIXED, 0)
+	ZEND_ARG_OBJ_INFO(0, fd, long, 0)
+	ZEND_ARG_OBJ_INFO(0, reg, long, 0)
+	ZEND_ARG_OBJ_INFO(0, length, long, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_WiringPi_I2CWriteBlock, 0, 3, long, 0)
+	ZEND_ARG_OBJ_INFO(0, fd, long, 0)
+	ZEND_ARG_OBJ_INFO(0, reg, long, 0)
+	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, length, long, 0, "0")
+ZEND_END_ARG_INFO()
+
 #define arginfo_class_WiringPi_getConstants arginfo_class_WiringPi_wiringPiVersion
 
 
@@ -246,6 +259,8 @@ ZEND_METHOD(WiringPi, wiringPiI2CWriteReg8);
 ZEND_METHOD(WiringPi, wiringPiI2CWriteReg16);
 ZEND_METHOD(WiringPi, wiringPiI2CSetupInterface);
 ZEND_METHOD(WiringPi, wiringPiI2CSetup);
+ZEND_METHOD(WiringPi, I2CReadBlock);
+ZEND_METHOD(WiringPi, I2CWriteBlock);
 ZEND_METHOD(WiringPi, getConstants);
 
 
@@ -309,6 +324,8 @@ static const zend_function_entry class_WiringPi_methods[] = {
 	ZEND_ME(WiringPi, wiringPiI2CWriteReg16, arginfo_class_WiringPi_wiringPiI2CWriteReg16, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(WiringPi, wiringPiI2CSetupInterface, arginfo_class_WiringPi_wiringPiI2CSetupInterface, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(WiringPi, wiringPiI2CSetup, arginfo_class_WiringPi_wiringPiI2CSetup, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, I2CReadBlock, arginfo_class_WiringPi_I2CReadBlock, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, I2CWriteBlock, arginfo_class_WiringPi_I2CWriteBlock, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(WiringPi, getConstants, arginfo_class_WiringPi_getConstants, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END
 };
