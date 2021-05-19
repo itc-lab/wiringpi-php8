@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 1be3d4b6a695381c5f26461e74e98ef93d0c008b */
+ * Stub hash: 88975a4e16187dca43a24aad08ff7ddcfb0c19d9 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_wiringpi_test1, 0, 0, IS_VOID, 0)
 ZEND_END_ARG_INFO()
@@ -202,6 +202,37 @@ ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_WiringPi_I2CWriteBlock, 0, 
 	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, length, long, 0, "0")
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_WiringPi_serialOpen, 0, 1, long, 0)
+	ZEND_ARG_TYPE_INFO(0, device, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, baud, long, 0, "9600")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, bits, long, 0, "8")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, parity, long, 0, "0")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, stops, long, 0, "1")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timeout, long, 0, "10")
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_WiringPi_serialFlush, 0, 1, IS_VOID, 0)
+	ZEND_ARG_OBJ_INFO(0, fd, long, 0)
+ZEND_END_ARG_INFO()
+
+#define arginfo_class_WiringPi_serialClose arginfo_class_WiringPi_serialFlush
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_WiringPi_serialPutchar, 0, 2, IS_VOID, 0)
+	ZEND_ARG_OBJ_INFO(0, fd, long, 0)
+	ZEND_ARG_OBJ_INFO(0, c, long, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_WiringPi_serialPuts, 0, 2, long, 0)
+	ZEND_ARG_OBJ_INFO(0, fd, long, 0)
+	ZEND_ARG_TYPE_INFO(0, str, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_WiringPi_serialDataAvail, 0, 1, _IS_BOOL, 0)
+	ZEND_ARG_OBJ_INFO(0, fd, long, 0)
+ZEND_END_ARG_INFO()
+
+#define arginfo_class_WiringPi_serialGetchar arginfo_class_WiringPi_wiringPiI2CRead
+
 #define arginfo_class_WiringPi_getConstants arginfo_class_WiringPi_wiringPiVersion
 
 
@@ -261,6 +292,13 @@ ZEND_METHOD(WiringPi, wiringPiI2CSetupInterface);
 ZEND_METHOD(WiringPi, wiringPiI2CSetup);
 ZEND_METHOD(WiringPi, I2CReadBlock);
 ZEND_METHOD(WiringPi, I2CWriteBlock);
+ZEND_METHOD(WiringPi, serialOpen);
+ZEND_METHOD(WiringPi, serialFlush);
+ZEND_METHOD(WiringPi, serialClose);
+ZEND_METHOD(WiringPi, serialPutchar);
+ZEND_METHOD(WiringPi, serialPuts);
+ZEND_METHOD(WiringPi, serialDataAvail);
+ZEND_METHOD(WiringPi, serialGetchar);
 ZEND_METHOD(WiringPi, getConstants);
 
 
@@ -326,6 +364,13 @@ static const zend_function_entry class_WiringPi_methods[] = {
 	ZEND_ME(WiringPi, wiringPiI2CSetup, arginfo_class_WiringPi_wiringPiI2CSetup, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(WiringPi, I2CReadBlock, arginfo_class_WiringPi_I2CReadBlock, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(WiringPi, I2CWriteBlock, arginfo_class_WiringPi_I2CWriteBlock, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialOpen, arginfo_class_WiringPi_serialOpen, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialFlush, arginfo_class_WiringPi_serialFlush, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialClose, arginfo_class_WiringPi_serialClose, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialPutchar, arginfo_class_WiringPi_serialPutchar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialPuts, arginfo_class_WiringPi_serialPuts, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialDataAvail, arginfo_class_WiringPi_serialDataAvail, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(WiringPi, serialGetchar, arginfo_class_WiringPi_serialGetchar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(WiringPi, getConstants, arginfo_class_WiringPi_getConstants, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END
 };

@@ -12,6 +12,7 @@
 #include <asm/ioctl.h>
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
+#include <termios.h>
 
 /* For compatibility with older PHP versions */
 #ifndef ZEND_PARSE_PARAMETERS_NONE
@@ -23,6 +24,9 @@
 static zend_class_entry *wiringpi_class_entry;
 
 #define	WIRINGPI_CLASS_NAME		"WiringPi"
+
+#define	PARITY_ODD		1
+#define	PARITY_EVEN		2
 
 #define	NAMEandVALUE(val)	{ #val, val }
 static const struct {
@@ -94,6 +98,9 @@ static const struct {
 	NAMEandVALUE( PI_MAKER_EGOMAN ),
 	NAMEandVALUE( PI_MAKER_EMBEST ),
 	NAMEandVALUE( PI_MAKER_UNKNOWN ),
+
+	NAMEandVALUE( PARITY_ODD ),
+	NAMEandVALUE( PARITY_EVEN ),
 
 	NAMEandVALUE( LSBFIRST ),
 	NAMEandVALUE( MSBFIRST ),
@@ -730,7 +737,7 @@ PHP_METHOD( WiringPi, I2CReadBlock ) {
 
 	array_init( return_value );
 	for ( i = 0; i < length; i ++ ) {
-		add_next_index_long( return_value, data.block[i + 1] );
+		add_next_index_long( return_value, (unsigned long)data.block[i + 1] );
 	}
 }
 
@@ -769,6 +776,120 @@ PHP_METHOD( WiringPi, I2CWriteBlock ) {
 	args.data		= &data;
 	rt = ioctl( fd, I2C_SMBUS, &args );
 	RETURN_LONG( rt );
+}
+
+
+PHP_METHOD( WiringPi, serialOpen) {
+	char *device;
+	size_t device_len;
+	zend_long baud = 9600;
+	zend_long bits = 8;
+	zend_long parity = 0;
+	zend_long stops = 1;
+	zend_long timeout = 10;		// 1 seconds (10 deciseconds)
+	zend_long fd;
+	struct termios options;
+
+	ZEND_PARSE_PARAMETERS_START( 1, 5 )
+		Z_PARAM_STRING(device, device_len)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG( baud )
+		Z_PARAM_LONG( bits )
+		Z_PARAM_LONG( parity )
+		Z_PARAM_LONG( stops )
+		Z_PARAM_LONG( timeout )
+	ZEND_PARSE_PARAMETERS_END();
+	fd = serialOpen( device, baud );
+	if ( fd >= 0 ) {
+		tcgetattr( fd, &options );
+		options.c_cflag &= ~PARENB;
+		if ( parity != 0 ) {
+			options.c_cflag |= PARENB;
+			if ( parity == PARITY_ODD ) {
+				options.c_cflag |= PARODD;
+			}
+		}
+		options.c_cflag &= ~CSTOPB;
+		if ( stops != 1 ) {
+			options.c_cflag |= CSTOPB;
+		}
+		options.c_cflag &= ~CSIZE;
+		if ( bits == 5 ) {
+			options.c_cflag |= CS5;
+		} else if ( bits == 6 ) {
+			options.c_cflag |= CS6;
+		} else if ( bits == 7 ) {
+			options.c_cflag |= CS7;
+		} else {
+			options.c_cflag |= CS8;
+		}
+		options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+		options.c_oflag &= ~OPOST;
+		options.c_cc [VTIME] = timeout ;
+		tcsetattr( fd, TCSANOW, &options );
+	}
+	RETURN_LONG( fd );
+}
+
+
+PHP_METHOD( WiringPi, serialFlush) {
+	zend_long fd;
+	ZEND_PARSE_PARAMETERS_START( 1, 1 )
+		Z_PARAM_LONG( fd )
+	ZEND_PARSE_PARAMETERS_END();
+	serialFlush( fd );
+}
+
+
+PHP_METHOD( WiringPi, serialClose) {
+	zend_long fd;
+	ZEND_PARSE_PARAMETERS_START( 1, 1 )
+		Z_PARAM_LONG( fd )
+	ZEND_PARSE_PARAMETERS_END();
+	serialClose( fd );
+}
+
+
+PHP_METHOD( WiringPi, serialPutchar) {
+	zend_long fd;
+	zend_long c;
+	ZEND_PARSE_PARAMETERS_START( 2, 2 )
+		Z_PARAM_LONG( fd )
+		Z_PARAM_LONG( c )
+	ZEND_PARSE_PARAMETERS_END();
+	serialPutchar( fd, c );
+}
+
+
+PHP_METHOD( WiringPi, serialPuts) {
+	zend_long fd;
+	char *str;
+	size_t str_len;
+	ZEND_PARSE_PARAMETERS_START( 2, 2 )
+		Z_PARAM_LONG( fd )
+		Z_PARAM_STRING(str, str_len)
+	ZEND_PARSE_PARAMETERS_END();
+	str[str_len] = '\0';
+	//serialPuts( fd, str );	//	not binary
+	RETURN_LONG( write( fd, str, str_len ) );
+}
+
+
+PHP_METHOD( WiringPi, serialDataAvail) {
+	zend_long fd;
+	ZEND_PARSE_PARAMETERS_START( 1, 1 )
+		Z_PARAM_LONG( fd )
+	ZEND_PARSE_PARAMETERS_END();
+	RETURN_BOOL( serialDataAvail( fd ) != 0 );
+}
+
+
+PHP_METHOD( WiringPi, serialGetchar) {
+	zend_long fd;
+	ZEND_PARSE_PARAMETERS_START( 1, 1 )
+		Z_PARAM_LONG( fd )
+	ZEND_PARSE_PARAMETERS_END();
+	RETURN_LONG( serialGetchar( fd ) );
 }
 
 

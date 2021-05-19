@@ -62,5 +62,12 @@ class WiringPi
 	public static function wiringPiI2CSetup(long $device): long {}
 	public static function I2CReadBlock(long $fd, long $reg, long $length): mixed {}
 	public static function I2CWriteBlock(long $fd, long $reg, mixed $value, long $length=0): long {}
+	public static function serialOpen(string $device, long $baud=9600, long $bits=8, long $parity=0,long $stops=1,long $timeout=10): long {}
+	public static function serialFlush(long $fd): void {}
+	public static function serialClose(long $fd): void {}
+	public static function serialPutchar(long $fd, long $c): void {}
+	public static function serialPuts(long $fd, string $str): long {}
+	public static function serialDataAvail(long $fd): bool {}
+	public static function serialGetchar(long $fd): long {}
 	public static function getConstants(): mixed {}
 }
